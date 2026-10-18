@@ -1,0 +1,232 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Government Scheme Eligibility Check</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f6fc;
+            margin: 0;
+            padding: 30px 15px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px #00000015;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #174a8b;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 11px;
+            margin-top: 7px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 22px;
+            background: #1769aa;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .result, .scheme-card {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f7ff;
+            border-radius: 8px;
+            overflow-wrap: anywhere;
+        }
+
+        .scheme-card a {
+            color: #0759a5;
+            font-weight: bold;
+        }
+
+        .note {
+            font-size: 13px;
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <h1>Government Scheme Eligibility Portal</h1>
+    <h2>Check Scheme Eligibility</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label for="age">Age</label>
+        <input type="number" id="age" name="age"
+               min="1" max="120" required>
+
+        <label for="income">Annual Family Income (₹)</label>
+        <input type="number" id="income" name="income"
+               min="0" required>
+
+        <label for="occupation">Occupation</label>
+        <select id="occupation" name="occupation" required>
+            <option value="">Select occupation</option>
+            <option value="student">Student</option>
+            <option value="farmer">Farmer</option>
+            <option value="employee">Employee</option>
+            <option value="unemployed">Unemployed</option>
+            <option value="self_employed">Self-employed</option>
+        </select>
+
+        <label for="state">State or Union Territory</label>
+        <select id="state" name="state" required>
+            <option value="">Select state</option>
+            <option>Andhra Pradesh</option>
+            <option>Arunachal Pradesh</option>
+            <option>Assam</option>
+            <option>Bihar</option>
+            <option>Chhattisgarh</option>
+            <option>Goa</option>
+            <option>Gujarat</option>
+            <option>Haryana</option>
+            <option>Himachal Pradesh</option>
+            <option>Jharkhand</option>
+            <option>Karnataka</option>
+            <option>Kerala</option>
+            <option>Madhya Pradesh</option>
+            <option>Maharashtra</option>
+            <option>Manipur</option>
+            <option>Meghalaya</option>
+            <option>Mizoram</option>
+            <option>Nagaland</option>
+            <option>Odisha</option>
+            <option>Punjab</option>
+            <option>Rajasthan</option>
+            <option>Sikkim</option>
+            <option>Tamil Nadu</option>
+            <option>Telangana</option>
+            <option>Tripura</option>
+            <option>Uttar Pradesh</option>
+            <option>Uttarakhand</option>
+            <option>West Bengal</option>
+            <option>Delhi</option>
+            <option>Jammu and Kashmir</option>
+            <option>Ladakh</option>
+            <option>Puducherry</option>
+            <option>Chandigarh</option>
+            <option>Andaman and Nicobar Islands</option>
+            <option>Dadra and Nagar Haveli and Daman and Diu</option>
+            <option>Lakshadweep</option>
+        </select>
+
+        <label for="student_status">Are you currently studying?</label>
+        <select id="student_status" name="student_status" required>
+            <option value="">Select answer</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select>
+
+        <label for="farmer_status">
+            Does your family cultivate agricultural land?
+        </label>
+        <select id="farmer_status" name="farmer_status" required>
+            <option value="">Select answer</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select>
+
+        <label for="land_ownership_status">
+            Do you or your family own agricultural land?
+        </label>
+        <select id="land_ownership_status"
+                name="land_ownership_status" required>
+            <option value="">Select answer</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select>
+
+        <label for="housing_status">
+            Does your household need housing assistance?
+        </label>
+        <select id="housing_status" name="housing_status" required>
+            <option value="">Select answer</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select>
+
+        <label for="pucca_house_status">
+            Does your household already own a pucca house?
+        </label>
+        <select id="pucca_house_status"
+                name="pucca_house_status" required>
+            <option value="">Select answer</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select>
+
+        <button type="submit">Check Eligibility</button>
+    </form>
+
+    {% if result %}
+        <div class="result">
+            <h3>Eligibility Result</h3>
+            <p>{{ result }}</p>
+        </div>
+    {% endif %}
+
+    {% if suggested_schemes %}
+        <h2>Suggested Government Schemes</h2>
+
+        {% for scheme in suggested_schemes %}
+            <div class="scheme-card">
+                <h3>{{ scheme.name }}</h3>
+                <p><strong>Category:</strong> {{ scheme.category }}</p>
+                <p><strong>Eligibility criteria:</strong>
+                    {{ scheme.eligibility }}
+                </p>
+                <p>{{ scheme.benefits }}</p>
+
+                <a href="{{ scheme.official_url }}"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Visit Official Website
+                </a>
+            </div>
+        {% endfor %}
+
+        <p class="note">
+            These are preliminary suggestions, not confirmation of
+            eligibility or government approval. Final eligibility
+            depends on the applicable official scheme rules.
+        </p>
+    {% endif %}
+
+    <p><a href="/">Back to Home</a></p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,94 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Eligibility History</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            margin: 0;
+            padding: 30px;
+            color: #1e293b;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px #00000015;
+        }
+
+        h1 {
+            color: #1d4ed8;
+            text-align: center;
+        }
+
+        .record {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 18px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .record p {
+            margin: 8px 0;
+        }
+
+        .button {
+            display: inline-block;
+            background: #1d4ed8;
+            color: white;
+            padding: 10px 16px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin: 5px;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 25px;
+            color: #64748b;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>My Eligibility History</h1>
+
+        <p>View your previous government scheme eligibility checks.</p>
+
+        {% for item in history %}
+            <div class="record">
+                <p><strong>Age:</strong> {{ item.age }}</p>
+                <p><strong>Annual Income:</strong> ₹{{ item.income }}</p>
+                <p><strong>Occupation:</strong> {{ item.occupation|title }}</p>
+                <p><strong>Result:</strong> {{ item.result }}</p>
+                <p><strong>Date:</strong> {{ item.checked_at|date:"d M Y, h:i A" }}</p>
+            </div>
+        {% empty %}
+            <div class="empty">
+                <h3>No history available</h3>
+                <p>Check your eligibility first to see your records here.</p>
+            </div>
+        {% endfor %}
+
+        <div style="text-align: center; margin-top: 25px;">
+            <a href="{% url 'accounts:eligibility' %}" class="button">
+                Check Eligibility
+            </a>
+
+            <a href="{% url 'accounts:home' %}" class="button">
+                Back to Home
+            </a>
+        </div>
+    </div>
+</body>
+</html>

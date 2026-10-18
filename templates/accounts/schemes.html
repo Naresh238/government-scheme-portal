@@ -1,0 +1,474 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Government Scheme Eligibility Portal</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f5fa;
+            margin: 0;
+            padding: 25px 15px;
+            color: #243247;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        .header {
+            text-align: center;
+            background: linear-gradient(135deg, #123b69, #2879b9);
+            color: white;
+            padding: 35px 20px;
+            border-radius: 14px;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            margin: 0 0 12px;
+            font-size: 30px;
+        }
+
+        .header p {
+            line-height: 1.6;
+            margin-bottom: 0;
+        }
+
+        .search-panel {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px #0000000d;
+            margin-bottom: 25px;
+        }
+
+        .search-panel label {
+            display: block;
+            font-weight: bold;
+            color: #173b70;
+            margin-bottom: 9px;
+        }
+
+        .search-panel input,
+        .search-panel select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ccd5e0;
+            border-radius: 7px;
+            font-size: 15px;
+            background: white;
+        }
+
+        .search-panel input:focus,
+        .search-panel select:focus {
+            outline: 2px solid #2879b9;
+            border-color: #2879b9;
+        }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 18px;
+        }
+
+        .results-count {
+            color: #52647a;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .schemes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 22px;
+        }
+
+        .scheme {
+            background: white;
+            padding: 23px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px #0000000d;
+            border-top: 4px solid #2879b9;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .scheme-icon {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .category {
+            display: inline-block;
+            background: #e7f1fb;
+            color: #174a7e;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 6px 10px;
+            border-radius: 20px;
+            margin-bottom: 13px;
+            align-self: flex-start;
+        }
+
+        .scheme h2 {
+            color: #2458a6;
+            font-size: 20px;
+            line-height: 1.4;
+            margin: 0 0 12px;
+        }
+
+        .scheme h2 a {
+            color: #2458a6;
+            text-decoration: none;
+        }
+
+        .scheme h2 a:hover {
+            color: #123b69;
+            text-decoration: underline;
+        }
+
+        .scheme p {
+            color: #657386;
+            line-height: 1.7;
+            flex-grow: 1;
+        }
+
+        .button {
+            display: inline-block;
+            background: #2458a6;
+            color: white;
+            padding: 11px 13px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin: 8px 5px 0 0;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .button:hover {
+            background: #173b70;
+        }
+
+        .button.official {
+            background: #16804a;
+        }
+
+        .button.official:hover {
+            background: #106339;
+        }
+
+        .no-results {
+            display: none;
+            background: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 10px;
+            color: #657386;
+            line-height: 1.7;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        footer {
+            text-align: center;
+            color: #657386;
+            margin-top: 35px;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .filter-row {
+                grid-template-columns: 1fr;
+            }
+
+            .schemes-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .button {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <header class="header">
+        <h1>🇮🇳 Government Scheme Portal</h1>
+        <p>
+            Discover government schemes, search by name, and filter
+            opportunities by category.
+        </p>
+    </header>
+
+    <section class="search-panel">
+        <div class="filter-row">
+
+            <div>
+                <label for="schemeSearch">🔍 Search Schemes</label>
+                <input
+                    type="search"
+                    id="schemeSearch"
+                    placeholder="Search by scheme name..."
+                    autocomplete="off"
+                >
+            </div>
+
+            <div>
+                <label for="categoryFilter">🏷️ Filter by Category</label>
+                <select id="categoryFilter">
+                    <option value="all">All Categories</option>
+                    <option value="education">Education</option>
+                    <option value="agriculture">Agriculture</option>
+                    <option value="healthcare">Healthcare</option>
+                    <option value="housing">Housing</option>
+                </select>
+            </div>
+
+        </div>
+    </section>
+
+    <h2>Available Government Schemes</h2>
+
+    <p id="resultsCount" class="results-count" aria-live="polite">
+        Showing 4 schemes
+    </p>
+
+    <div class="schemes-grid" id="schemesGrid">
+
+        <!-- National Scholarship Portal -->
+        <article class="scheme"
+                 data-category="education"
+                 data-name="national scholarship portal nsp scholarship students">
+
+            <div class="scheme-icon">🎓</div>
+            <span class="category">Education</span>
+
+            <h2>
+                <a href="{% url 'accounts:scheme_details' scheme_name='nsp' %}">
+                    National Scholarship Portal
+                </a>
+            </h2>
+
+            <p>
+                Explore scholarship opportunities for eligible students.
+                Requirements vary by scholarship and applicant.
+            </p>
+
+            <div>
+                <a class="button"
+                   href="{% url 'accounts:scheme_details' scheme_name='nsp' %}">
+                    View Details
+                </a>
+
+                <a class="button official"
+                   href="https://scholarships.gov.in/"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Official Website
+                </a>
+            </div>
+        </article>
+
+        <!-- PM-KISAN -->
+        <article class="scheme"
+                 data-category="agriculture"
+                 data-name="pm kisan pm-kisan farmer agriculture financial support">
+
+            <div class="scheme-icon">🌾</div>
+            <span class="category">Agriculture</span>
+
+            <h2>
+                <a href="{% url 'accounts:scheme_details' scheme_name='pm-kisan' %}">
+                    PM-KISAN
+                </a>
+            </h2>
+
+            <p>
+                Learn about financial support for eligible farmer
+                families and review the official scheme requirements.
+            </p>
+
+            <div>
+                <a class="button"
+                   href="{% url 'accounts:scheme_details' scheme_name='pm-kisan' %}">
+                    View Details
+                </a>
+
+                <a class="button official"
+                   href="https://pmkisan.gov.in/"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Official Website
+                </a>
+            </div>
+        </article>
+
+        <!-- Ayushman Bharat PM-JAY -->
+        <article class="scheme"
+                 data-category="healthcare"
+                 data-name="ayushman bharat pm-jay pmjay health healthcare hospital">
+
+            <div class="scheme-icon">🏥</div>
+            <span class="category">Healthcare</span>
+
+            <h2>
+                <a href="{% url 'accounts:scheme_details' scheme_name='ayushman-bharat' %}">
+                    Ayushman Bharat PM-JAY
+                </a>
+            </h2>
+
+            <p>
+                Explore health coverage information for eligible
+                beneficiaries under the applicable scheme rules.
+            </p>
+
+            <div>
+                <a class="button"
+                   href="{% url 'accounts:scheme_details' scheme_name='ayushman-bharat' %}">
+                    View Details
+                </a>
+
+                <a class="button official"
+                   href="https://beneficiary.nha.gov.in/"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Official Website
+                </a>
+            </div>
+        </article>
+
+        <!-- Pradhan Mantri Awas Yojana -->
+        <article class="scheme"
+                 data-category="housing"
+                 data-name="pradhan mantri awas yojana pm awas housing home">
+
+            <div class="scheme-icon">🏠</div>
+            <span class="category">Housing</span>
+
+            <h2>
+                <a href="{% url 'accounts:scheme_details' scheme_name='pm-awas' %}">
+                    Pradhan Mantri Awas Yojana
+                </a>
+            </h2>
+
+            <p>
+                Find housing assistance information for eligible
+                households and consult the official scheme portal.
+            </p>
+
+            <div>
+                <a class="button"
+                   href="{% url 'accounts:scheme_details' scheme_name='pm-awas' %}">
+                    View Details
+                </a>
+
+                <a class="button official"
+                   href="https://pmay-urban.gov.in/"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Official Website
+                </a>
+            </div>
+        </article>
+
+    </div>
+
+    <div id="noResults" class="no-results" role="status">
+        <h3>No schemes found</h3>
+        <p>Try another search term or select a different category.</p>
+    </div>
+
+    <div class="navigation">
+        <a class="button" href="{% url 'accounts:eligibility' %}">
+            Check Eligibility
+        </a>
+
+        <a class="button" href="{% url 'accounts:home' %}">
+            Back to Dashboard
+        </a>
+    </div>
+
+    <footer>
+        <p><strong>Government Scheme Eligibility Checking Portal</strong></p>
+        <p>Developed by P. Naresh | Student Project</p>
+        <p>
+            Scheme information is for educational purposes.
+            Verify eligibility through official government sources.
+        </p>
+    </footer>
+
+</div>
+
+<script>
+    const searchInput = document.getElementById("schemeSearch");
+    const categoryFilter = document.getElementById("categoryFilter");
+    const schemeCards = document.querySelectorAll(".scheme");
+    const resultsCount = document.getElementById("resultsCount");
+    const noResults = document.getElementById("noResults");
+
+    function filterSchemes() {
+        const searchText = searchInput.value.trim().toLowerCase();
+        const selectedCategory = categoryFilter.value;
+
+        let visibleCount = 0;
+
+        schemeCards.forEach(function(card) {
+            const schemeName = card.dataset.name.toLowerCase();
+            const schemeText = card.innerText.toLowerCase();
+            const schemeCategory = card.dataset.category;
+
+            const matchesSearch =
+                schemeName.includes(searchText) ||
+                schemeText.includes(searchText);
+
+            const matchesCategory =
+                selectedCategory === "all" ||
+                schemeCategory === selectedCategory;
+
+            if (matchesSearch && matchesCategory) {
+                card.style.display = "flex";
+                visibleCount++;
+            } else {
+                card.style.display = "none";
+            }
+        });
+
+        resultsCount.textContent =
+            "Showing " + visibleCount +
+            (visibleCount === 1 ? " scheme" : " schemes");
+
+        noResults.style.display =
+            visibleCount === 0 ? "block" : "none";
+    }
+
+    searchInput.addEventListener("input", filterSchemes);
+    categoryFilter.addEventListener("change", filterSchemes);
+</script>
+
+</body>
+</html>

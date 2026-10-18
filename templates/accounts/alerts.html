@@ -1,0 +1,189 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Government Scheme Alerts</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #17365d;
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        input, select {
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        select {
+            min-width: 170px;
+        }
+
+        .alert {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px #ddd;
+        }
+
+        .alert h2 {
+            color: #174a7e;
+            margin-top: 0;
+        }
+
+        .category {
+            color: #276749;
+            font-weight: bold;
+        }
+
+        .date {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #174a7e;
+        }
+
+        #noResults {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <h1>Live Government Scheme Alerts</h1>
+
+    <p>
+        View scheme announcements and information added by the
+        portal administrator.
+    </p>
+
+    <div class="filters">
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search alerts..."
+            oninput="filterAlerts()"
+        >
+
+        <select id="categoryFilter" onchange="filterAlerts()">
+            <option value="">All Categories</option>
+            <option value="education">Education</option>
+            <option value="agriculture">Agriculture</option>
+            <option value="healthcare">Healthcare</option>
+            <option value="housing">Housing</option>
+        </select>
+    </div>
+
+    <div id="alertsContainer">
+        {% for alert in alerts %}
+            <div class="alert">
+                <h2>{{ alert.title }}</h2>
+
+                <p class="category">
+                    Category: {{ alert.category }}
+                </p>
+
+                <p class="date">
+                    Added: {{ alert.created_at|date:"d M Y, h:i A" }}
+                </p>
+
+                <p>{{ alert.message }}</p>
+            </div>
+        {% empty %}
+            <p>No alerts have been added yet.</p>
+        {% endfor %}
+    </div>
+
+    <p id="noResults">
+        No matching alerts found.
+    </p>
+
+    <a class="back-link" href="{% url 'accounts:home' %}">
+        Back to Home
+    </a>
+
+</div>
+
+<script>
+    function filterAlerts() {
+        const searchText = document
+            .getElementById("searchInput")
+            .value.toLowerCase();
+
+        const selectedCategory = document
+            .getElementById("categoryFilter")
+            .value.toLowerCase();
+
+        const alerts = document.querySelectorAll(".alert");
+        let visibleCount = 0;
+
+        alerts.forEach(function(alert) {
+            const text = alert.textContent.toLowerCase();
+            const categoryElement = alert.querySelector(".category");
+
+            const category = categoryElement.textContent
+                .replace("Category:", "")
+                .trim()
+                .toLowerCase();
+
+            const matchesSearch = text.includes(searchText);
+
+            const matchesCategory =
+                selectedCategory === "" ||
+                category === selectedCategory;
+
+            if (matchesSearch && matchesCategory) {
+                alert.style.display = "block";
+                visibleCount++;
+            } else {
+                alert.style.display = "none";
+            }
+        });
+
+        document.getElementById("noResults").style.display =
+            visibleCount === 0 && alerts.length > 0
+                ? "block"
+                : "none";
+    }
+</script>
+
+</body>
+</html>

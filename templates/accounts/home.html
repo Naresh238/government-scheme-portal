@@ -1,0 +1,534 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Government Scheme Portal</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f6fb;
+            color: #243247;
+            line-height: 1.6;
+        }
+
+        header {
+            background: #123b69;
+            color: white;
+            padding: 18px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        header h2 {
+            margin: 0;
+            font-size: 23px;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        nav a:hover {
+            color: #bfe0ff;
+            text-decoration: underline;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #123b69, #2879b9);
+            color: white;
+            text-align: center;
+            padding: 65px 20px;
+        }
+
+        .hero h1 {
+            font-size: clamp(28px, 4vw, 42px);
+            margin: 0 0 15px;
+        }
+
+        .hero p {
+            font-size: 17px;
+            line-height: 1.8;
+            max-width: 780px;
+            margin: 0 auto 25px;
+        }
+
+        .hero-button {
+            display: inline-block;
+            background: white;
+            color: #174a7e;
+            padding: 13px 22px;
+            border-radius: 7px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 5px;
+        }
+
+        .hero-button:hover {
+            background: #e5effa;
+        }
+
+        .container {
+            max-width: 1150px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            margin: 0 0 10px;
+            color: #17365d;
+        }
+
+        .section-description {
+            text-align: center;
+            color: #657386;
+            margin: 0 auto 30px;
+            max-width: 750px;
+        }
+
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 22px;
+            margin: 30px 0 45px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px 18px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
+            border-top: 4px solid #2879b9;
+        }
+
+        .stat-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .stat-card h3 {
+            color: #657386;
+            font-size: 15px;
+            margin: 5px 0 12px;
+        }
+
+        .stat-number {
+            color: #174a7e;
+            font-size: 32px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 22px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px 22px;
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
+            border-top: 4px solid #2879b9;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-icon {
+            font-size: 34px;
+            margin-bottom: 10px;
+        }
+
+        .card h3 {
+            color: #174a7e;
+            margin: 0 0 10px;
+        }
+
+        .card p {
+            color: #657386;
+            line-height: 1.7;
+            flex-grow: 1;
+            overflow-wrap: anywhere;
+        }
+
+        .card a {
+            display: inline-block;
+            background: #174a7e;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 5px 5px 0 0;
+            text-align: center;
+        }
+
+        .card a:hover {
+            background: #2879b9;
+        }
+
+        .recent-section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 35px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+            overflow-wrap: anywhere;
+        }
+
+        .recent-section h2 {
+            color: #17365d;
+            margin-top: 0;
+        }
+
+        .recent-item {
+            padding: 15px 0;
+            border-bottom: 1px solid #e5eaf1;
+            line-height: 1.8;
+        }
+
+        .recent-item:last-child {
+            border-bottom: none;
+        }
+
+        .empty-history {
+            color: #657386;
+        }
+
+        .notice {
+            background: #e7f1fb;
+            border-left: 5px solid #2879b9;
+            padding: 18px;
+            margin-top: 35px;
+            border-radius: 5px;
+        }
+
+        .messages {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .message {
+            background: #e4f7e9;
+            color: #205c32;
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            background: #123b69;
+            color: white;
+            text-align: center;
+            padding: 22px;
+            margin-top: 45px;
+        }
+
+        footer p {
+            margin: 6px 0;
+        }
+
+        @media (max-width: 850px) {
+            .cards {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 600px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            nav {
+                justify-content: center;
+                gap: 12px;
+            }
+
+            .hero {
+                padding: 45px 18px;
+            }
+
+            .dashboard-stats,
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .recent-section {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h2>🇮🇳 Government Scheme Portal</h2>
+
+    <nav>
+        <a href="{% url 'accounts:home' %}">Home</a>
+
+        {% if user.is_authenticated %}
+            <a href="{% url 'accounts:eligibility' %}">Eligibility</a>
+            <a href="{% url 'accounts:history' %}">My History</a>
+            <a href="{% url 'accounts:profile' %}">My Profile</a>
+            <a href="{% url 'accounts:schemes' %}">Schemes</a>
+            <a href="{% url 'accounts:alerts' %}">Live Alerts</a>
+            <a href="{% url 'accounts:logout' %}">Logout</a>
+        {% else %}
+            <a href="{% url 'accounts:login' %}">Login</a>
+            <a href="{% url 'accounts:register' %}">Register</a>
+        {% endif %}
+    </nav>
+</header>
+
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+        <div class="message">{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<section class="hero">
+    <h1>Find Government Schemes for You</h1>
+
+    <p>
+        Welcome to the Government Scheme Eligibility Checking Portal.
+        Explore government schemes, check possible eligibility using
+        sample rules, and view scheme information and alerts in one place.
+    </p>
+
+    {% if user.is_authenticated %}
+        <a class="hero-button" href="{% url 'accounts:eligibility' %}">
+            Check Eligibility
+        </a>
+    {% else %}
+        <a class="hero-button" href="{% url 'accounts:login' %}">
+            Login to Get Started
+        </a>
+        <a class="hero-button" href="{% url 'accounts:register' %}">
+            Create Account
+        </a>
+    {% endif %}
+</section>
+
+<main class="container">
+
+    {% if user.is_authenticated %}
+
+        <h2 class="section-title">My Dashboard</h2>
+
+        <p class="section-description">
+            Welcome, {{ user.first_name|default:user.username }}!
+            Here is an overview of your portal activity.
+        </p>
+
+        <div class="dashboard-stats">
+
+            <div class="stat-card">
+                <div class="stat-icon">📝</div>
+                <h3>My Eligibility Checks</h3>
+                <p class="stat-number">{{ total_checks|default:0 }}</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">🏛️</div>
+                <h3>Government Schemes</h3>
+                <p class="stat-number">{{ total_schemes|default:0 }}</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">🔔</div>
+                <h3>Scheme Alerts</h3>
+                <p class="stat-number">{{ total_alerts|default:0 }}</p>
+            </div>
+
+        </div>
+
+        <section class="recent-section">
+            <h2>Recent Eligibility Checks</h2>
+
+            {% for item in recent_checks %}
+                <div class="recent-item">
+                    <strong>Occupation:</strong>
+                    {{ item.occupation|title }}
+                    <br>
+
+                    <strong>Age:</strong>
+                    {{ item.age }}
+                    <br>
+
+                    <strong>Annual Income:</strong>
+                    ₹{{ item.income }}
+                    <br>
+
+                    <strong>Checked On:</strong>
+                    {{ item.checked_at|date:"d M Y, h:i A" }}
+                    <br>
+
+                    <strong>Result:</strong>
+                    <div>{{ item.result|linebreaksbr }}</div>
+                </div>
+            {% empty %}
+                <p class="empty-history">
+                    You have not checked eligibility yet.
+                    Click below to get started.
+                </p>
+
+                <a class="hero-button"
+                   href="{% url 'accounts:eligibility' %}">
+                    Check Eligibility Now
+                </a>
+            {% endfor %}
+
+            {% if recent_checks %}
+                <p>
+                    <a href="{% url 'accounts:history' %}">
+                        View All My History
+                    </a>
+                </p>
+            {% endif %}
+        </section>
+
+    {% endif %}
+
+    <h2 class="section-title" style="margin-top: 45px;">
+        Explore Our Services
+    </h2>
+
+    <p class="section-description">
+        Access the portal's main features using the options below.
+    </p>
+
+    <div class="cards">
+
+        <div class="card">
+            <div class="card-icon">📝</div>
+            <h3>Eligibility Checker</h3>
+            <p>
+                Enter your age, income, and occupation to check possible
+                matches under the portal's sample eligibility rules.
+            </p>
+            {% if user.is_authenticated %}
+                <a href="{% url 'accounts:eligibility' %}">Check Now</a>
+            {% else %}
+                <a href="{% url 'accounts:login' %}">Login First</a>
+            {% endif %}
+        </div>
+
+        <div class="card">
+            <div class="card-icon">📋</div>
+            <h3>My Eligibility History</h3>
+            <p>
+                Review your previous eligibility checks, results,
+                income details, and check dates.
+            </p>
+            {% if user.is_authenticated %}
+                <a href="{% url 'accounts:history' %}">View My History</a>
+            {% else %}
+                <a href="{% url 'accounts:login' %}">Login First</a>
+            {% endif %}
+        </div>
+
+        <div class="card">
+            <div class="card-icon">🏛️</div>
+            <h3>Government Schemes</h3>
+            <p>
+                Explore information about scholarships, farmer support,
+                healthcare, and housing schemes.
+            </p>
+            {% if user.is_authenticated %}
+                <a href="{% url 'accounts:schemes' %}">View Schemes</a>
+            {% else %}
+                <a href="{% url 'accounts:login' %}">Login First</a>
+            {% endif %}
+        </div>
+
+        <div class="card">
+            <div class="card-icon">🔔</div>
+            <h3>Live Scheme Alerts</h3>
+            <p>
+                View alerts added by the portal administrator,
+                including categories, messages, and dates.
+            </p>
+            {% if user.is_authenticated %}
+                <a href="{% url 'accounts:alerts' %}">View Alerts</a>
+            {% else %}
+                <a href="{% url 'accounts:login' %}">Login First</a>
+            {% endif %}
+        </div>
+
+        <div class="card">
+            <div class="card-icon">👤</div>
+            <h3>
+                {% if user.is_authenticated %}
+                    My Profile
+                {% else %}
+                    Create an Account
+                {% endif %}
+            </h3>
+            <p>
+                {% if user.is_authenticated %}
+                    You are logged in as {{ user.username }}.
+                    View your account details.
+                {% else %}
+                    Register to access eligibility checking,
+                    schemes, alerts, and your personal history.
+                {% endif %}
+            </p>
+            {% if user.is_authenticated %}
+                <a href="{% url 'accounts:profile' %}">View Profile</a>
+            {% else %}
+                <a href="{% url 'accounts:register' %}">Register Now</a>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <div class="notice">
+        <strong>Important information:</strong>
+        Eligibility results are based on sample rules and do not confirm
+        eligibility for an actual government scheme. Always verify the
+        latest criteria through the relevant official government portal.
+    </div>
+
+</main>
+
+<footer>
+    <p><strong>Government Scheme Eligibility Checking Portal</strong></p>
+    <p>Developed by P. Naresh | Student Project</p>
+    <p>For educational and informational purposes.</p>
+</footer>
+
+</body>
+</html>

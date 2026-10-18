@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f6fb;
+            margin: 0;
+            padding: 30px 15px;
+            color: #243247;
+        }
+        .profile {
+            max-width: 550px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 14px #dce2eb;
+        }
+        h1 {
+            text-align: center;
+            color: #174a7e;
+        }
+        .item {
+            padding: 15px;
+            margin: 12px 0;
+            background: #f3f6fb;
+            border-radius: 6px;
+            overflow-wrap: anywhere;
+        }
+        .label {
+            font-weight: bold;
+            color: #174a7e;
+        }
+        a {
+            display: inline-block;
+            margin-top: 15px;
+            margin-right: 10px;
+            padding: 11px 16px;
+            background: #174a7e;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <div class="profile">
+        <h1>My Profile</h1>
+
+        <div class="item">
+            <span class="label">Username:</span>
+            {{ profile_user.username }}
+        </div>
+
+        <div class="item">
+            <span class="label">Full Name:</span>
+            {{ profile_user.first_name|default:"Not provided" }}
+        </div>
+
+        <div class="item">
+            <span class="label">Email:</span>
+            {{ profile_user.email|default:"Not provided" }}
+        </div>
+
+        <a href="{% url 'accounts:home' %}">Back to Home</a>
+        <a href="{% url 'accounts:logout' %}">Logout</a>
+    </div>
+</body>
+</html>
