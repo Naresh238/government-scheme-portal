@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Government Scheme Portal</title>
+    <title>Government Scheme Eligibility Portal</title>
 
     <style>
         * {
@@ -62,7 +62,7 @@
             background: linear-gradient(135deg, #123b69, #2879b9);
             color: white;
             text-align: center;
-            padding: 65px 20px;
+            padding: 60px 20px;
         }
 
         .hero h1 {
@@ -81,7 +81,7 @@
             display: inline-block;
             background: white;
             color: #174a7e;
-            padding: 13px 22px;
+            padding: 12px 20px;
             border-radius: 7px;
             text-decoration: none;
             font-weight: bold;
@@ -115,7 +115,7 @@
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 22px;
-            margin: 30px 0 45px;
+            margin: 30px 0 40px;
         }
 
         .stat-card {
@@ -129,13 +129,12 @@
 
         .stat-icon {
             font-size: 32px;
-            margin-bottom: 8px;
         }
 
         .stat-card h3 {
             color: #657386;
             font-size: 15px;
-            margin: 5px 0 12px;
+            margin: 8px 0;
         }
 
         .stat-number {
@@ -143,6 +142,42 @@
             font-size: 32px;
             font-weight: bold;
             margin: 0;
+        }
+
+        .recent-section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 30px 0 45px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+            overflow-wrap: anywhere;
+        }
+
+        .recent-section h2 {
+            color: #17365d;
+            margin-top: 0;
+        }
+
+        .recent-item {
+            padding: 16px 0;
+            border-bottom: 1px solid #e5eaf1;
+        }
+
+        .recent-item:last-child {
+            border-bottom: none;
+        }
+
+        .recent-item p {
+            margin: 5px 0;
+        }
+
+        .empty-history {
+            color: #657386;
+        }
+
+        .inline-link {
+            color: #174a7e;
+            font-weight: bold;
         }
 
         .cards {
@@ -153,7 +188,7 @@
 
         .card {
             background: white;
-            padding: 25px 22px;
+            padding: 24px 22px;
             border-radius: 12px;
             box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
             border-top: 4px solid #2879b9;
@@ -186,40 +221,12 @@
             border-radius: 6px;
             text-decoration: none;
             font-weight: bold;
-            margin: 5px 5px 0 0;
+            margin-top: 8px;
             text-align: center;
         }
 
         .card a:hover {
             background: #2879b9;
-        }
-
-        .recent-section {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            margin-top: 35px;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
-            overflow-wrap: anywhere;
-        }
-
-        .recent-section h2 {
-            color: #17365d;
-            margin-top: 0;
-        }
-
-        .recent-item {
-            padding: 15px 0;
-            border-bottom: 1px solid #e5eaf1;
-            line-height: 1.8;
-        }
-
-        .recent-item:last-child {
-            border-bottom: none;
-        }
-
-        .empty-history {
-            color: #657386;
         }
 
         .notice {
@@ -244,11 +251,34 @@
             margin-bottom: 10px;
         }
 
+        .alert-preview {
+            background: white;
+            padding: 18px;
+            border-radius: 10px;
+            border-left: 4px solid #e5a000;
+            margin-bottom: 12px;
+        }
+
+        .alert-preview h3 {
+            margin: 0 0 5px;
+            color: #174a7e;
+        }
+
+        .alert-preview p {
+            margin: 5px 0;
+            overflow-wrap: anywhere;
+        }
+
+        .muted {
+            color: #657386;
+            font-size: 13px;
+        }
+
         footer {
             background: #123b69;
             color: white;
             text-align: center;
-            padding: 22px;
+            padding: 24px 15px;
             margin-top: 45px;
         }
 
@@ -274,7 +304,7 @@
             }
 
             .hero {
-                padding: 45px 18px;
+                padding: 42px 18px;
             }
 
             .dashboard-stats,
@@ -312,11 +342,11 @@
 </header>
 
 {% if messages %}
-<div class="messages">
-    {% for message in messages %}
-        <div class="message">{{ message }}</div>
-    {% endfor %}
-</div>
+    <div class="messages">
+        {% for message in messages %}
+            <div class="message">{{ message }}</div>
+        {% endfor %}
+    </div>
 {% endif %}
 
 <section class="hero">
@@ -331,6 +361,9 @@
     {% if user.is_authenticated %}
         <a class="hero-button" href="{% url 'accounts:eligibility' %}">
             Check Eligibility
+        </a>
+        <a class="hero-button" href="{% url 'accounts:schemes' %}">
+            Explore Schemes
         </a>
     {% else %}
         <a class="hero-button" href="{% url 'accounts:login' %}">
@@ -358,7 +391,7 @@
             <div class="stat-card">
                 <div class="stat-icon">📝</div>
                 <h3>My Eligibility Checks</h3>
-                <p class="stat-number">{{ total_checks|default:0 }}</p>
+                <p class="stat-number">{{ my_total_checks|default:0 }}</p>
             </div>
 
             <div class="stat-card">
@@ -380,23 +413,29 @@
 
             {% for item in recent_checks %}
                 <div class="recent-item">
-                    <strong>Occupation:</strong>
-                    {{ item.occupation|title }}
-                    <br>
+                    <h3>Eligibility Check #{{ item.id }}</h3>
 
-                    <strong>Age:</strong>
-                    {{ item.age }}
-                    <br>
+                    <p>
+                        <strong>Occupation:</strong>
+                        {{ item.occupation|title }}
+                    </p>
 
-                    <strong>Annual Income:</strong>
-                    ₹{{ item.income }}
-                    <br>
+                    <p>
+                        <strong>Age:</strong>
+                        {{ item.age }}
+                    </p>
 
-                    <strong>Checked On:</strong>
-                    {{ item.checked_at|date:"d M Y, h:i A" }}
-                    <br>
+                    <p>
+                        <strong>Annual Income:</strong>
+                        ₹{{ item.income }}
+                    </p>
 
-                    <strong>Result:</strong>
+                    <p>
+                        <strong>Checked On:</strong>
+                        {{ item.checked_at|date:"d M Y, h:i A" }}
+                    </p>
+
+                    <p><strong>Result:</strong></p>
                     <div>{{ item.result|linebreaksbr }}</div>
                 </div>
             {% empty %}
@@ -405,7 +444,7 @@
                     Click below to get started.
                 </p>
 
-                <a class="hero-button"
+                <a class="inline-link"
                    href="{% url 'accounts:eligibility' %}">
                     Check Eligibility Now
                 </a>
@@ -413,11 +452,35 @@
 
             {% if recent_checks %}
                 <p>
-                    <a href="{% url 'accounts:history' %}">
-                        View All My History
+                    <a class="inline-link"
+                       href="{% url 'accounts:history' %}">
+                        View All My History →
                     </a>
                 </p>
             {% endif %}
+        </section>
+
+        <section class="recent-section">
+            <h2>Latest Scheme Alerts</h2>
+
+            {% for alert in recent_alerts %}
+                <div class="alert-preview">
+                    <h3>{{ alert.title }}</h3>
+                    <p><strong>Category:</strong> {{ alert.category }}</p>
+                    <p>{{ alert.message|truncatewords:30 }}</p>
+                    <p class="muted">
+                        {{ alert.created_at|date:"d M Y, h:i A" }}
+                    </p>
+                </div>
+            {% empty %}
+                <p class="empty-history">
+                    No scheme alerts are available yet.
+                </p>
+            {% endfor %}
+
+            <a class="inline-link" href="{% url 'accounts:alerts' %}">
+                View All Alerts →
+            </a>
         </section>
 
     {% endif %}
@@ -478,8 +541,8 @@
             <div class="card-icon">🔔</div>
             <h3>Live Scheme Alerts</h3>
             <p>
-                View alerts added by the portal administrator,
-                including categories, messages, and dates.
+                View portal notifications, their categories, messages,
+                and publication dates.
             </p>
             {% if user.is_authenticated %}
                 <a href="{% url 'accounts:alerts' %}">View Alerts</a>
@@ -497,15 +560,17 @@
                     Create an Account
                 {% endif %}
             </h3>
+
             <p>
                 {% if user.is_authenticated %}
                     You are logged in as {{ user.username }}.
-                    View your account details.
+                    View and update your account details.
                 {% else %}
                     Register to access eligibility checking,
                     schemes, alerts, and your personal history.
                 {% endif %}
             </p>
+
             {% if user.is_authenticated %}
                 <a href="{% url 'accounts:profile' %}">View Profile</a>
             {% else %}
@@ -526,7 +591,7 @@
 
 <footer>
     <p><strong>Government Scheme Eligibility Checking Portal</strong></p>
-    <p>Developed by P. Naresh | Student Project</p>
+    <p>Developed by P. Naresh | Saveetha University, Chennai</p>
     <p>For educational and informational purposes.</p>
 </footer>
 
