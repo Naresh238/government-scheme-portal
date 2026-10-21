@@ -36,6 +36,7 @@ INSTALLED_APPS = [
 # Middleware
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -66,8 +67,8 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 # Database configuration
-# Render uses DATABASE_URL (PostgreSQL).
-# Local development uses SQLite if DATABASE_URL is absent.
+# Render: PostgreSQL through DATABASE_URL
+# Local development: SQLite if DATABASE_URL is not set
 DATABASES = {
     "default": dj_database_url.config(
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
@@ -96,6 +97,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         "NAME": (
+            "django.contrib.auth.password_validation.CommonPasswordValidator"
+        ),
+    },
+    {
+        "NAME": (
             "django.contrib.auth.password_validation.NumericPasswordValidator"
         ),
     },
@@ -110,6 +116,14 @@ USE_TZ = True
 # Static files
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 # Default primary key
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -117,6 +131,12 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # HTTPS configuration for Render
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
+# CSRF protection
 CSRF_TRUSTED_ORIGINS = [
     "https://government-scheme-portal.onrender.com",
 ]
+
+# Secure cookies on deployed HTTPS site
+if not DEBUG:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
