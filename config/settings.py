@@ -2,37 +2,25 @@
 import os
 from pathlib import Path
 
-import dj_database_url
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Security settings
+# Keep your secret key in an environment variable in production.
 SECRET_KEY = os.environ.get(
     "DJANGO_SECRET_KEY",
-    "django-insecure-local-development-only-key",
+    "django-insecure-local-development-key-change-me"
 )
 
-DEBUG = os.environ.get("DJANGO_DEBUG", "True").lower() == "true"
+# Debug mode should be disabled on the public website.
+DEBUG = os.environ.get("DJANGO_DEBUG", "False").lower() == "true"
 
+# Allow your Render domain and local development addresses.
 ALLOWED_HOSTS = [
-    host.strip()
-    for host in os.environ.get(
-        "DJANGO_ALLOWED_HOSTS",
-        "127.0.0.1,localhost",
-    ).split(",")
-    if host.strip()
+    "government-scheme-portal.onrender.com",
+    "localhost",
+    "127.0.0.1",
 ]
 
-CSRF_TRUSTED_ORIGINS = [
-    origin.strip()
-    for origin in os.environ.get(
-        "DJANGO_CSRF_TRUSTED_ORIGINS",
-        "https://government-scheme-portal.onrender.com",
-    ).split(",")
-    if origin.strip()
-]
-
-# Applications
+# Django applications
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -46,7 +34,6 @@ INSTALLED_APPS = [
 # Middleware
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -65,6 +52,7 @@ TEMPLATES = [
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
+                "django.template.context_processors.debug",
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
@@ -75,24 +63,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-# Database: PostgreSQL on Render, SQLite locally
-DATABASE_URL = os.environ.get("DATABASE_URL")
-
-if DATABASE_URL:
-    DATABASES = {
-        "default": dj_database_url.parse(
-            DATABASE_URL,
-            conn_max_age=600,
-            ssl_require=True,
-        )
+# Database: matches the SQLite configuration in your error report.
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
-    }
+}
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -129,22 +106,16 @@ USE_I18N = True
 USE_TZ = True
 
 # Static files
-STATIC_URL = "/static/"
+STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-STORAGES = {
-    "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
-    },
-    "staticfiles": {
-        "BACKEND": (
-            "whitenoise.storage.CompressedManifestStaticFilesStorage"
-        ),
-    },
-}
-
-# Email
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-
-# Default primary key
+# Default model primary key
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Render terminates HTTPS at its proxy.
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# Trusted HTTPS origins for forms and CSRF protection.
+CSRF_TRUSTED_ORIGINS = [
+    "https://government-scheme-portal.onrender.com",
+]
