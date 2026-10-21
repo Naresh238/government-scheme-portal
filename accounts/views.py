@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseNotFound
+from django.urls import reverse
 
 from .models import SchemeAlert, EligibilityHistory, GovernmentScheme
 
@@ -90,13 +91,11 @@ def user_logout(request):
 
 @login_required(login_url="accounts:login")
 def home(request):
-    # Dashboard statistics
     total_users = User.objects.count()
     total_schemes = GovernmentScheme.objects.count()
     total_checks = EligibilityHistory.objects.count()
     total_alerts = SchemeAlert.objects.count()
 
-    # Current user's eligibility information
     my_total_checks = EligibilityHistory.objects.filter(
         user=request.user
     ).count()
@@ -119,209 +118,206 @@ def home(request):
 
 @login_required(login_url="accounts:login")
 def check_eligibility(request):
-    result = ""
-    suggested_schemes = []
+    if request.method == "GET":
+        return render(
+            request,
+            "accounts/eligibility.html",
+            {
+                "result": "",
+                "suggested_schemes": [],
+            },
+        )
 
-    if request.method == "POST":
-        age_text = request.POST.get("age", "").strip()
-        income_text = request.POST.get("income", "").strip()
+    age_text = request.POST.get("age", "").strip()
+    income_text = request.POST.get("income", "").strip()
+    occupation = request.POST.get("occupation", "").strip().lower()
+    state = request.POST.get("state", "").strip()
+    student_status = request.POST.get(
+        "student_status", ""
+    ).strip().lower()
+    farmer_status = request.POST.get(
+        "farmer_status", ""
+    ).strip().lower()
+    land_ownership_status = request.POST.get(
+        "land_ownership_status", ""
+    ).strip().lower()
+    housing_status = request.POST.get(
+        "housing_status", ""
+    ).strip().lower()
+    pucca_house_status = request.POST.get(
+        "pucca_house_status", ""
+    ).strip().lower()
 
-        occupation = request.POST.get(
-            "occupation", ""
-        ).strip().lower()
+    if not all([
+        age_text,
+        income_text,
+        occupation,
+        state,
+        student_status,
+        farmer_status,
+        land_ownership_status,
+        housing_status,
+        pucca_house_status,
+    ]):
+        return render(
+            request,
+            "accounts/eligibility.html",
+            {
+                "result": "Please complete all fields.",
+                "suggested_schemes": [],
+            },
+        )
 
-        state = request.POST.get("state", "").strip()
-
-        student_status = request.POST.get(
-            "student_status", ""
-        ).strip().lower()
-
-        farmer_status = request.POST.get(
-            "farmer_status", ""
-        ).strip().lower()
-
-        land_ownership_status = request.POST.get(
-            "land_ownership_status", ""
-        ).strip().lower()
-
-        housing_status = request.POST.get(
-            "housing_status", ""
-        ).strip().lower()
-
-        pucca_house_status = request.POST.get(
-            "pucca_house_status", ""
-        ).strip().lower()
-
-        if not all([
-            age_text,
-            income_text,
-            occupation,
-            state,
-            student_status,
-            farmer_status,
-            land_ownership_status,
-            housing_status,
-            pucca_house_status,
-        ]):
-            result = "Please complete all fields."
-
-        else:
-            try:
-                age = int(age_text)
-                income = int(income_text)
-
-                if age < 1 or age > 120:
-                    result = "Please enter an age between 1 and 120."
-
-                elif income < 0:
-                    result = (
-                        "Annual family income cannot be negative."
-                    )
-
-                elif student_status not in ["yes", "no"]:
-                    result = "Please select a valid student status."
-
-                elif farmer_status not in ["yes", "no"]:
-                    result = "Please select a valid farmer status."
-
-                elif land_ownership_status not in ["yes", "no"]:
-                    result = (
-                        "Please select a valid land ownership answer."
-                    )
-
-                elif housing_status not in ["yes", "no"]:
-                    result = "Please select a valid housing status."
-
-                elif pucca_house_status not in ["yes", "no"]:
-                    result = (
-                        "Please select a valid pucca-house answer."
-                    )
-
-                elif occupation not in [
-                    "student",
-                    "farmer",
-                    "employee",
-                    "unemployed",
-                    "self_employed",
-                ]:
-                    result = "Please select a valid occupation."
-
-                else:
-                    schemes = GovernmentScheme.objects.all().order_by(
-                        "name"
-                    )
-
-                    for scheme in schemes:
-                        category = (
-                            scheme.category or ""
-                        ).strip().lower()
-
-                        matched = True
-
-                        # Age criteria
-                        if not (
-                            scheme.min_age <= age <= scheme.max_age
-                        ):
-                            matched = False
-
-                        # Income criteria
-                        if (
-                            scheme.max_annual_income is not None
-                            and income > scheme.max_annual_income
-                        ):
-                            matched = False
-
-                        # Occupation criteria
-                        required_occupation = (
-                            scheme.required_occupation or ""
-                        ).strip().lower()
-
-                        if (
-                            required_occupation
-                            and required_occupation != occupation
-                        ):
-                            matched = False
-
-                        # State criteria
-                        required_state = (
-                            scheme.required_state or ""
-                        ).strip().lower()
-
-                        if (
-                            required_state
-                            and required_state != state.lower()
-                        ):
-                            matched = False
-
-                        # Education criteria
-                        if (
-                            "education" in category
-                            and student_status != "yes"
-                        ):
-                            matched = False
-
-                        # Agriculture criteria
-                        if "agriculture" in category:
-                            if (
-                                farmer_status != "yes"
-                                or occupation != "farmer"
-                                or land_ownership_status != "yes"
-                            ):
-                                matched = False
-
-                        if (
-                            scheme.requires_land_ownership
-                            and land_ownership_status != "yes"
-                        ):
-                            matched = False
-
-                        # Housing criteria
-                        if (
-                            "housing" in category
-                            and housing_status != "yes"
-                        ):
-                            matched = False
-
-                        if (
-                            scheme.requires_no_pucca_house
-                            and pucca_house_status != "no"
-                        ):
-                            matched = False
-
-                        if matched:
-                            suggested_schemes.append(scheme)
-
-                    if suggested_schemes:
-                        result = (
-                            "The schemes below match your answers and "
-                            "the criteria configured in this portal. "
-                            "This is a preliminary screening, not "
-                            "official confirmation of eligibility. "
-                            "Please verify the official scheme rules "
-                            "before applying."
-                        )
-                    else:
-                        result = (
-                            "No schemes matched the configured criteria "
-                            "and your answers. You may still qualify for "
-                            "other schemes. Please check the official "
-                            "requirements."
-                        )
-
-                    # Save the eligibility check
-                    EligibilityHistory.objects.create(
-                        user=request.user,
-                        age=age,
-                        income=income,
-                        occupation=occupation,
-                        result=result,
-                    )
-
-            except (ValueError, TypeError):
-                result = (
+    try:
+        age = int(age_text)
+        income = int(income_text)
+    except (ValueError, TypeError):
+        return render(
+            request,
+            "accounts/eligibility.html",
+            {
+                "result": (
                     "Please enter valid whole numbers for age "
                     "and annual family income."
-                )
+                ),
+                "suggested_schemes": [],
+            },
+        )
+
+    if not 1 <= age <= 120:
+        result = "Please enter an age between 1 and 120."
+    elif income < 0:
+        result = "Annual family income cannot be negative."
+    elif occupation not in {
+        "student", "farmer", "employee", "unemployed", "self_employed"
+    }:
+        result = "Please select a valid occupation."
+    elif student_status not in {"yes", "no"}:
+        result = "Please select a valid student status."
+    elif farmer_status not in {"yes", "no"}:
+        result = "Please select a valid farmer status."
+    elif land_ownership_status not in {"yes", "no"}:
+        result = "Please select a valid land ownership answer."
+    elif housing_status not in {"yes", "no"}:
+        result = "Please select a valid housing status."
+    elif pucca_house_status not in {"yes", "no"}:
+        result = "Please select a valid pucca-house answer."
+    else:
+        result = ""
+    
+    if result:
+        return render(
+            request,
+            "accounts/eligibility.html",
+            {
+                "result": result,
+                "suggested_schemes": [],
+            },
+        )
+
+    suggested_schemes = []
+
+    for scheme in GovernmentScheme.objects.all().order_by("name"):
+        matched = True
+        category = (scheme.category or "").strip().casefold()
+        required_occupation = (
+            scheme.required_occupation or ""
+        ).strip().casefold()
+        required_state = (
+            scheme.required_state or ""
+        ).strip().casefold()
+
+        # Age range
+        if not scheme.min_age <= age <= scheme.max_age:
+            matched = False
+
+        # Maximum annual family income, if configured
+        if (
+            scheme.max_annual_income is not None
+            and income > scheme.max_annual_income
+        ):
+            matched = False
+
+        # Explicit occupation requirement
+        if required_occupation and required_occupation != occupation:
+            matched = False
+
+        # Explicit state requirement
+        if required_state and required_state != state.casefold():
+            matched = False
+
+        # Student requirements for education schemes
+        if "education" in category and student_status != "yes":
+            matched = False
+
+        # Agriculture requirements
+        if "agriculture" in category and (
+            farmer_status != "yes"
+            or occupation != "farmer"
+            or land_ownership_status != "yes"
+        ):
+            matched = False
+
+        if (
+            scheme.requires_land_ownership
+            and land_ownership_status != "yes"
+        ):
+            matched = False
+
+        # Housing requirements
+        if "housing" in category and housing_status != "yes":
+            matched = False
+
+        if (
+            scheme.requires_no_pucca_house
+            and pucca_house_status != "no"
+        ):
+            matched = False
+
+        if matched:
+            suggested_schemes.append(scheme)
+
+    if suggested_schemes:
+        result = (
+            "The schemes below match your answers and the criteria "
+            "configured in this portal. This is a preliminary screening, "
+            "not official confirmation of eligibility. Verify official "
+            "scheme rules before applying."
+        )
+    else:
+        result = (
+            "No schemes matched the configured criteria and your answers. "
+            "You may still qualify for other schemes. Please check the "
+            "official requirements."
+        )
+
+    # Save the result and redirect to prevent refresh from repeating POST.
+    EligibilityHistory.objects.create(
+        user=request.user,
+        age=age,
+        income=income,
+        occupation=occupation,
+        result=result,
+    )
+
+    request.session["eligibility_result"] = result
+    request.session["eligibility_scheme_slugs"] = [
+        scheme.slug for scheme in suggested_schemes
+    ]
+
+    return redirect("accounts:eligibility_result")
+
+
+@login_required(login_url="accounts:login")
+def eligibility_result(request):
+    result = request.session.pop("eligibility_result", "")
+    scheme_slugs = request.session.pop("eligibility_scheme_slugs", [])
+
+    suggested_schemes = list(
+        GovernmentScheme.objects.filter(
+            slug__in=scheme_slugs
+        ).order_by("name")
+    )
 
     return render(
         request,
@@ -377,6 +373,7 @@ def eligibility_history(request):
     )
 
 
+@login_required(login_url="accounts:login")
 def scheme_details(request, scheme_name):
     scheme = GovernmentScheme.objects.filter(
         slug=scheme_name
