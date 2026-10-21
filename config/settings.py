@@ -2,25 +2,27 @@
 import os
 from pathlib import Path
 
+import dj_database_url
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Keep your secret key in an environment variable in production.
+# Secret key
 SECRET_KEY = os.environ.get(
     "DJANGO_SECRET_KEY",
-    "django-insecure-local-development-key-change-me"
+    "django-insecure-local-development-key-change-me",
 )
 
-# Debug mode should be disabled on the public website.
+# Debug mode
 DEBUG = os.environ.get("DJANGO_DEBUG", "False").lower() == "true"
 
-# Allow your Render domain and local development addresses.
+# Allowed hosts
 ALLOWED_HOSTS = [
     "government-scheme-portal.onrender.com",
     "localhost",
     "127.0.0.1",
 ]
 
-# Django applications
+# Installed applications
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -44,7 +46,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "config.urls"
 
-# Templates
+# Template configuration
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -63,12 +65,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-# Database: matches the SQLite configuration in your error report.
+# Database configuration
+# Render uses DATABASE_URL (PostgreSQL).
+# Local development uses SQLite if DATABASE_URL is absent.
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+    "default": dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600,
+        ssl_require=not DEBUG,
+    )
 }
 
 # Password validation
@@ -81,20 +86,17 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         "NAME": (
-            "django.contrib.auth.password_validation."
-            "MinimumLengthValidator"
+            "django.contrib.auth.password_validation.MinimumLengthValidator"
         ),
     },
     {
         "NAME": (
-            "django.contrib.auth.password_validation."
-            "CommonPasswordValidator"
+            "django.contrib.auth.password_validation.CommonPasswordValidator"
         ),
     },
     {
         "NAME": (
-            "django.contrib.auth.password_validation."
-            "NumericPasswordValidator"
+            "django.contrib.auth.password_validation.NumericPasswordValidator"
         ),
     },
 ]
@@ -106,16 +108,15 @@ USE_I18N = True
 USE_TZ = True
 
 # Static files
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# Default model primary key
+# Default primary key
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Render terminates HTTPS at its proxy.
+# HTTPS configuration for Render
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-# Trusted HTTPS origins for forms and CSRF protection.
 CSRF_TRUSTED_ORIGINS = [
     "https://government-scheme-portal.onrender.com",
 ]
