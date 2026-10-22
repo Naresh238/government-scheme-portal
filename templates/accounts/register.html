@@ -1,44 +1,135 @@
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Citizen Registration</title>
-</head>
-<body>
-    <h1>Government Scheme Eligibility Portal</h1>
-    <h2>Citizen Registration</h2>
+{% extends "accounts/base.html" %}
 
-    {% if messages %}
-        {% for message in messages %}
-            <p>{{ message }}</p>
-        {% endfor %}
-    {% endif %}
+{% block title %}Citizen Registration | Government Scheme Portal{% endblock %}
 
-    <form method="POST">
-        {% csrf_token %}
+{% block content %}
+<section class="auth-layout">
 
-        <label>Full Name:</label>
-        <input type="text" name="full_name" required>
-        <br><br>
+    <div class="auth-picture register-picture">
+        <div class="auth-picture-overlay">
+            <span class="picture-tag">🇮🇳 CITIZEN SERVICES</span>
+            <h1>Join Our Portal!</h1>
+            <p>
+                Create your citizen account to explore government schemes,
+                check possible eligibility, and discover benefits for your family.
+            </p>
 
-        <label>Email:</label>
-        <input type="email" name="email" required>
-        <br><br>
+            <div class="picture-feature">✓ Simple citizen registration</div>
+            <div class="picture-feature">✓ Check government scheme eligibility</div>
+            <div class="picture-feature">✓ Track your eligibility history</div>
+        </div>
+    </div>
 
-        <label>Username:</label>
-        <input type="text" name="username" required>
-        <br><br>
+    <div class="auth-card auth-form-card">
+        <div class="login-icon">📝</div>
 
-        <label>Password:</label>
-        <input type="password" name="password" required>
-        <br><br>
+        <h1>Citizen Registration</h1>
+        <p class="auth-subtitle">Create your account to get started</p>
 
-        <label>Confirm Password:</label>
-        <input type="password" name="confirm_password" required>
-        <br><br>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
 
-        <button type="submit">Register</button>
-    </form>
-</body>
-</html>
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="full_name">Full Name</label>
+                <input
+                    type="text"
+                    id="full_name"
+                    name="full_name"
+                    placeholder="Enter your full name"
+                    autocomplete="name"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter your email address"
+                    autocomplete="email"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="Choose a username"
+                    autocomplete="username"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+
+                <div class="password-wrapper">
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Create a password"
+                        autocomplete="new-password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="toggle-password"
+                        data-target="password"
+                        aria-label="Show password"
+                        aria-pressed="false"
+                    >👁️ Show</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirm_password">Confirm Password</label>
+
+                <div class="password-wrapper">
+                    <input
+                        type="password"
+                        id="confirm_password"
+                        name="confirm_password"
+                        placeholder="Enter your password again"
+                        autocomplete="new-password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="toggle-password"
+                        data-target="confirm_password"
+                        aria-label="Show password"
+                        aria-pressed="false"
+                    >👁️ Show</button>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                Create Account →
+            </button>
+        </form>
+
+        <p class="auth-footer">
+            Already registered?
+            <a href="{% url 'accounts:login' %}">Login here</a>
+        </p>
+    </div>
+
+</section>
+{% endblock %}

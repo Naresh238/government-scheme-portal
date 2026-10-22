@@ -1,0 +1,86 @@
+
+{% extends "accounts/base.html" %}
+
+{% block title %}Citizen Login | Government Scheme Portal{% endblock %}
+
+{% block content %}
+<section class="auth-layout">
+
+    <div class="auth-picture login-picture">
+        <div class="auth-picture-overlay">
+            <span class="picture-tag">🇮🇳 CITIZEN SERVICES</span>
+            <h1>Welcome Back!</h1>
+            <p>
+                Access government scheme information, check possible
+                eligibility, and discover benefits for your family.
+            </p>
+            <div class="picture-feature">✓ Easy eligibility checking</div>
+            <div class="picture-feature">✓ Scheme information in one place</div>
+            <div class="picture-feature">✓ Convenient citizen dashboard</div>
+        </div>
+    </div>
+
+    <div class="auth-card auth-form-card">
+        <div class="login-icon">🏛️</div>
+        <h1>Citizen Login</h1>
+        <p class="auth-subtitle">Sign in to your account</p>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="Enter your username"
+                    autocomplete="username"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+
+                <div class="password-wrapper">
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="toggle-password"
+                        data-target="password"
+                        aria-label="Show password"
+                        aria-pressed="false"
+                    >👁️ Show</button>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                Login →
+            </button>
+        </form>
+
+        <p class="auth-footer">
+            Don't have an account?
+            <a href="{% url 'accounts:register' %}">Register here</a>
+        </p>
+    </div>
+
+</section>
+{% endblock %}

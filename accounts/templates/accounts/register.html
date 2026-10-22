@@ -1,91 +1,82 @@
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Citizen Registration</title>
+{% extends "accounts/base.html" %}
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet">
+{% block title %}Citizen Registration | Government Scheme Portal{% endblock %}
 
-    <style>
-        body {
-            background: #f0f4f8;
-            font-family: Arial, sans-serif;
-        }
+{% block content %}
+<section class="auth-layout register-layout">
 
-        .register-box {
-            max-width: 500px;
-            margin: 50px auto;
-            padding: 30px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        h2 {
-            color: #174a8b;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-
-        .subtitle {
-            text-align: center;
-            color: #666;
-            margin-bottom: 25px;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="container">
-        <div class="register-box">
-            <h2>Citizen Registration</h2>
-            <p class="subtitle">
-                Government Scheme Eligibility Portal
+    <div class="auth-picture register-picture">
+        <div class="auth-picture-overlay">
+            <span class="picture-tag">✨ JOIN OUR PORTAL</span>
+            <h1>Your Journey Starts Here!</h1>
+            <p>
+                Create your citizen account to explore government
+                schemes and review possible benefits for your needs.
             </p>
-
-            <form>
-                <div class="mb-3">
-                    <label class="form-label">Full Name</label>
-                    <input type="text" class="form-control"
-                           placeholder="Enter your full name" required>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Email Address</label>
-                    <input type="email" class="form-control"
-                           placeholder="Enter your email" required>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Username</label>
-                    <input type="text" class="form-control"
-                           placeholder="Choose a username" required>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Password</label>
-                    <input type="password" class="form-control"
-                           placeholder="Create a password" required>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Confirm Password</label>
-                    <input type="password" class="form-control"
-                           placeholder="Confirm your password" required>
-                </div>
-
-                <button type="submit" class="btn btn-primary w-100">
-                    Register
-                </button>
-            </form>
-
-            <p class="text-center mt-3 mb-0">
-                Already registered? <a href="#">Login</a>
-            </p>
+            <div class="picture-feature">🌾 Support for farming</div>
+            <div class="picture-feature">🏥 Healthcare information</div>
+            <div class="picture-feature">🎓 Education and housing schemes</div>
         </div>
     </div>
-</body>
-</html>
+
+    <div class="auth-card auth-form-card">
+        <div class="login-icon">👤</div>
+        <h1>Create Account</h1>
+        <p class="auth-subtitle">Register as a citizen</p>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="full_name">Full Name</label>
+                <input type="text" id="full_name" name="full_name"
+                       placeholder="Enter your full name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email"
+                       placeholder="Enter your email address" required>
+            </div>
+
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username"
+                       placeholder="Choose a username" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password"
+                       placeholder="Create a password" required>
+            </div>
+
+            <div class="form-group">
+                <label for="confirm_password">Confirm Password</label>
+                <input type="password" id="confirm_password"
+                       name="confirm_password"
+                       placeholder="Enter your password again" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                Create My Account →
+            </button>
+        </form>
+
+        <p class="auth-footer">
+            Already registered?
+            <a href="{% url 'accounts:login' %}">Login here</a>
+        </p>
+    </div>
+
+</section>
+{% endblock %}

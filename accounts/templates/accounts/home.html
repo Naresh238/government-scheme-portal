@@ -1,0 +1,235 @@
+
+{% extends "accounts/base.html" %}
+{% load static %}
+
+{% block title %}Dashboard | Government Scheme Portal{% endblock %}
+
+{% block content %}
+
+<section class="hero hero-colourful">
+    <div class="hero-content">
+        <span class="hero-badge">🇮🇳 Citizen Services Portal</span>
+
+        <h1>Government Schemes<br>
+            <span>for a Brighter Future</span>
+        </h1>
+
+        <p>
+            Discover government benefits, explore welfare programmes,
+            and check which schemes may match your profile.
+        </p>
+
+        <div class="hero-highlights">
+            <span>🛡️ Citizen focused</span>
+            <span>⚡ Easy eligibility checks</span>
+            <span>🤝 Inclusive benefits</span>
+        </div>
+
+        <div class="hero-actions">
+            <a href="{% url 'accounts:eligibility' %}"
+               class="btn btn-primary">
+                Check My Eligibility →
+            </a>
+
+            <a href="{% url 'accounts:schemes' %}"
+               class="btn btn-secondary">
+                Explore Schemes
+            </a>
+        </div>
+    </div>
+
+    <div class="hero-visual">
+        <img
+            src="https://images.unsplash.com/photo-1532375810709-75b1da00537c?auto=format&fit=crop&w=900&q=85"
+            alt="Indian community and public services"
+            loading="eager"
+        >
+        <div class="hero-image-label">
+            <span>🌱</span>
+            <div>
+                <strong>Benefits for Every Citizen</strong>
+                <small>Education · Health · Housing · Agriculture</small>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="dashboard-section">
+    <div class="section-heading">
+        <span class="section-kicker">YOUR PERSONAL SPACE</span>
+        <h2>👋 Welcome, {{ request.user.first_name|default:request.user.username }}!</h2>
+        <p>Track your activity and discover government welfare schemes.</p>
+    </div>
+
+    <div class="dashboard-grid colourful-stats">
+
+        <div class="dashboard-card stat-blue">
+            <div class="card-icon">📝</div>
+            <h3>My Eligibility Checks</h3>
+            <p class="stat-number">{{ total_checks|default:0 }}</p>
+            <a href="{% url 'accounts:history' %}">View History →</a>
+        </div>
+
+        <div class="dashboard-card stat-purple">
+            <div class="card-icon">🏛️</div>
+            <h3>Government Schemes</h3>
+            <p class="stat-number">{{ total_schemes|default:0 }}</p>
+            <a href="{% url 'accounts:schemes' %}">Explore Schemes →</a>
+        </div>
+
+        <div class="dashboard-card stat-orange">
+            <div class="card-icon">🔔</div>
+            <h3>Scheme Alerts</h3>
+            <p class="stat-number">{{ total_alerts|default:0 }}</p>
+            <a href="{% url 'accounts:alerts' %}">View Alerts →</a>
+        </div>
+
+    </div>
+</section>
+
+<section class="dashboard-section">
+    <div class="section-heading">
+        <span class="section-kicker">EXPLORE WELFARE PROGRAMMES</span>
+        <h2>🌈 Schemes for Every Need</h2>
+        <p>Explore support for farming, healthcare, housing and education.</p>
+    </div>
+
+    <div class="scheme-showcase">
+
+        <article class="showcase-card showcase-green">
+            <img
+                src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=700&q=80"
+                alt="Green agricultural fields"
+                loading="lazy"
+            >
+            <div class="showcase-content">
+                <span class="showcase-icon">🌾</span>
+                <h3>Farmer Welfare</h3>
+                <p>Explore agricultural assistance and farmer support schemes.</p>
+                <a href="{% url 'accounts:schemes' %}">Explore Agriculture →</a>
+            </div>
+        </article>
+
+        <article class="showcase-card showcase-pink">
+            <img
+                src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=700&q=80"
+                alt="Healthcare professionals"
+                loading="lazy"
+            >
+            <div class="showcase-content">
+                <span class="showcase-icon">🏥</span>
+                <h3>Health &amp; Wellness</h3>
+                <p>Learn about healthcare benefits and public health support.</p>
+                <a href="{% url 'accounts:schemes' %}">Explore Healthcare →</a>
+            </div>
+        </article>
+
+        <article class="showcase-card showcase-blue">
+            <img
+                src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=700&q=80"
+                alt="A modern residential home"
+                loading="lazy"
+            >
+            <div class="showcase-content">
+                <span class="showcase-icon">🏠</span>
+                <h3>Housing Support</h3>
+                <p>Discover housing programmes and possible home assistance.</p>
+                <a href="{% url 'accounts:schemes' %}">Explore Housing →</a>
+            </div>
+        </article>
+
+        <article class="showcase-card showcase-purple">
+            <img
+                src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=700&q=80"
+                alt="Students learning together"
+                loading="lazy"
+            >
+            <div class="showcase-content">
+                <span class="showcase-icon">🎓</span>
+                <h3>Education Support</h3>
+                <p>Find scholarship information and education assistance.</p>
+                <a href="{% url 'accounts:schemes' %}">Explore Education →</a>
+            </div>
+        </article>
+
+    </div>
+</section>
+
+<section class="dashboard-section">
+    <div class="section-heading">
+        <span class="section-kicker">ONE PORTAL, SIMPLE STEPS</span>
+        <h2>🚀 How It Works</h2>
+    </div>
+
+    <div class="steps-grid">
+        <div class="step-card step-one">
+            <span>01</span>
+            <div class="step-icon">👤</div>
+            <h3>Your Profile</h3>
+            <p>Keep your citizen details up to date.</p>
+        </div>
+
+        <div class="step-card step-two">
+            <span>02</span>
+            <div class="step-icon">🔎</div>
+            <h3>Check Eligibility</h3>
+            <p>Enter your details to review possible matches.</p>
+        </div>
+
+        <div class="step-card step-three">
+            <span>03</span>
+            <div class="step-icon">📋</div>
+            <h3>Review Schemes</h3>
+            <p>Read requirements and official scheme information.</p>
+        </div>
+
+        <div class="step-card step-four">
+            <span>04</span>
+            <div class="step-icon">🌟</div>
+            <h3>Next Steps</h3>
+            <p>Use official government portals for applications.</p>
+        </div>
+    </div>
+
+    <p class="notice-banner">
+        ℹ️ Eligibility results on this portal are preliminary suggestions.
+        Final eligibility and approval depend on the relevant government authority.
+    </p>
+</section>
+
+<section class="dashboard-section">
+    <div class="section-heading">
+        <span class="section-kicker">YOUR RECENT ACTIVITY</span>
+        <h2>📊 Recent Eligibility Checks</h2>
+    </div>
+
+    {% if recent_checks %}
+        <div class="recent-checks colourful-recent">
+            {% for check in recent_checks %}
+                <div class="recent-check-item">
+                    <div class="recent-check-icon">✅</div>
+                    <div class="recent-check-details">
+                        <strong>Eligibility Check #{{ check.id }}</strong>
+                        <p>{{ check.created_at|date:"d M Y, h:i A" }}</p>
+                    </div>
+                    <span class="status-label">Recorded</span>
+                </div>
+            {% endfor %}
+        </div>
+
+        <a href="{% url 'accounts:history' %}" class="btn btn-primary">
+            View All History →
+        </a>
+    {% else %}
+        <div class="empty-state colourful-empty">
+            <div class="empty-icon">🔍</div>
+            <h3>Your journey starts here!</h3>
+            <p>You haven't completed an eligibility check yet.</p>
+            <a href="{% url 'accounts:eligibility' %}" class="btn btn-primary">
+                Start Your First Check →
+            </a>
+        </div>
+    {% endif %}
+</section>
+
+{% endblock %}
