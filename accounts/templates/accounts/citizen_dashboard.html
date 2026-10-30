@@ -1,0 +1,636 @@
+﻿{% extends "accounts/base.html" %}
+
+{% block title %}Citizen Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+.citizen-dashboard {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 25px 15px;
+    color: #1e293b;
+}
+
+.dashboard-header {
+    background: linear-gradient(120deg, #173b6c, #2466a5);
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+    box-shadow: 0 5px 18px rgba(23, 59, 108, 0.15);
+}
+
+.dashboard-header h1 {
+    margin: 0 0 10px;
+    font-size: 29px;
+}
+
+.dashboard-header p {
+    margin: 7px 0;
+    line-height: 1.6;
+}
+
+.dashboard-section {
+    margin: 30px 0;
+}
+
+.dashboard-section h2 {
+    color: #173b6c;
+    font-size: 22px;
+    margin: 0 0 17px;
+}
+
+.service-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 17px;
+}
+
+.service-card {
+    background: #fff;
+    border: 1px solid #e5eaf0;
+    border-radius: 12px;
+    padding: 21px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, .05);
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.service-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 7px 20px rgba(23, 59, 108, .10);
+}
+
+.service-card h3 {
+    color: #173b6c;
+    font-size: 16px;
+    margin: 0 0 10px;
+}
+
+.service-card p {
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 44px;
+}
+
+.service-card a,
+.action-button {
+    display: inline-block;
+    background: #173b6c;
+    color: white;
+    text-decoration: none;
+    padding: 10px 14px;
+    border: 0;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.service-card a:hover,
+.action-button:hover {
+    background: #15966a;
+    color: white;
+}
+
+/* Application summary */
+
+.application-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 15px;
+    margin-bottom: 22px;
+}
+
+.summary-card {
+    background: white;
+    border: 1px solid #e5eaf0;
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, .04);
+}
+
+.summary-card span {
+    display: block;
+    color: #64748b;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.summary-card strong {
+    color: #173b6c;
+    font-size: 26px;
+}
+
+/* Recent applications */
+
+.applications-panel {
+    background: white;
+    border: 1px solid #e5eaf0;
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, .05);
+}
+
+.applications-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.applications-panel-header h2 {
+    margin: 0 0 6px;
+}
+
+.applications-panel-header p {
+    color: #64748b;
+    font-size: 14px;
+    margin: 0;
+}
+
+.view-all-button {
+    display: inline-block;
+    background: #173b6c;
+    color: white;
+    text-decoration: none;
+    padding: 11px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.view-all-button:hover {
+    background: #15966a;
+    color: white;
+}
+
+.application-list {
+    display: grid;
+    gap: 14px;
+}
+
+.application-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    flex-wrap: wrap;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 18px;
+}
+
+.application-details {
+    flex: 1;
+    min-width: 220px;
+}
+
+.application-details h3 {
+    color: #173b6c;
+    font-size: 16px;
+    margin: 0 0 12px;
+}
+
+.application-details p {
+    color: #64748b;
+    font-size: 13px;
+    margin: 6px 0;
+    overflow-wrap: anywhere;
+}
+
+.application-details strong {
+    color: #334155;
+}
+
+.application-status-area {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 7px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    background: #e2e8f0;
+    color: #334155;
+}
+
+.status-approved {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-rejected {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.status-under_review {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.status-submitted {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-documents_required {
+    background: #ffedd5;
+    color: #9a3412;
+}
+
+.status-action {
+    display: inline-block;
+    color: #173b6c;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.status-action:hover {
+    color: #15966a;
+    text-decoration: underline;
+}
+
+.empty-applications {
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 10px;
+    padding: 30px 20px;
+    text-align: center;
+}
+
+.empty-applications h3 {
+    color: #173b6c;
+    margin-top: 0;
+}
+
+.empty-applications p {
+    color: #64748b;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+/* Logout */
+
+.logout-link {
+    display: inline-block;
+    background: #b42318;
+    color: white;
+    padding: 11px 20px;
+    border: 0;
+    border-radius: 7px;
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.logout-link:hover {
+    background: #8f1d14;
+}
+
+.dashboard-note {
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-top: 25px;
+}
+
+@media (max-width: 600px) {
+    .citizen-dashboard {
+        padding: 16px 10px;
+    }
+
+    .dashboard-header {
+        padding: 22px 18px;
+    }
+
+    .dashboard-header h1 {
+        font-size: 24px;
+    }
+
+    .service-card {
+        padding: 18px;
+    }
+
+    .applications-panel {
+        padding: 16px;
+    }
+
+    .applications-panel-header {
+        align-items: flex-start;
+    }
+
+    .application-item {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .application-status-area {
+        width: 100%;
+    }
+
+    .view-all-button {
+        text-align: center;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="citizen-dashboard">
+
+    <!-- Dashboard Welcome -->
+    <header class="dashboard-header">
+        <h1>Citizen Dashboard</h1>
+        <p>Welcome, {{ citizen.name|default:request.user.username }}!</p>
+        <p>Manage your government scheme applications, documents and services from one place.</p>
+    </header>
+
+    <!-- Application Summary -->
+    <section class="dashboard-section">
+        <h2>Application Overview</h2>
+
+        <div class="application-summary">
+            <div class="summary-card">
+                <span>Total Applications</span>
+                <strong>{{ total_applications|default:0 }}</strong>
+            </div>
+
+            <div class="summary-card">
+                <span>Pending Applications</span>
+                <strong>{{ pending_applications|default:0 }}</strong>
+            </div>
+
+            <div class="summary-card">
+                <span>Approved Applications</span>
+                <strong>{{ approved_applications|default:0 }}</strong>
+            </div>
+
+            <div class="summary-card">
+                <span>Rejected Applications</span>
+                <strong>{{ rejected_applications|default:0 }}</strong>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recent Applications -->
+    <section class="dashboard-section">
+        <div class="applications-panel">
+
+            <div class="applications-panel-header">
+                <div>
+                    <h2>My Recent Applications</h2>
+                    <p>Check your latest applications and their current status.</p>
+                </div>
+
+                <a
+                    href="{% url 'accounts:citizen_applications' %}"
+                    class="view-all-button"
+                >
+                    View All Applications â†’
+                </a>
+            </div>
+
+            {% if applications %}
+                <div class="application-list">
+
+                    {% for application in applications %}
+                        <article class="application-item">
+
+                            <div class="application-details">
+                                <h3>{{ application.scheme.name }}</h3>
+
+                                <p>
+                                    <strong>Application ID:</strong>
+                                    {{ application.application_number|default:application.id }}
+                                </p>
+
+                                <p>
+                                    <strong>Applied Date:</strong>
+                                    {{ application.applied_date|date:"d M Y" }}
+                                </p>
+                            </div>
+
+                            <div class="application-status-area">
+                                <span class="status-badge status-{{ application.application_status }}">
+                                    {{ application.get_application_status_display }}
+                                </span>
+
+                                <a
+                                    href="{% url 'accounts:citizen_applications' %}"
+                                    class="status-action"
+                                >
+                                    View Details / Documents â†’
+                                </a>
+                            </div>
+
+                        </article>
+                    {% endfor %}
+
+                </div>
+
+                <p class="dashboard-note">
+                    Showing your recent applications. Open My Applications to view
+                    all applications and upload or check your documents.
+                </p>
+
+            {% else %}
+                <div class="empty-applications">
+                    <h3>No Applications Yet</h3>
+                    <p>
+                        You have not submitted any government scheme applications.
+                        Browse the available schemes to get started.
+                    </p>
+
+                    <a
+                        href="{% url 'accounts:schemes' %}"
+                        class="view-all-button"
+                    >
+                        Browse Government Schemes
+                    </a>
+                </div>
+            {% endif %}
+
+        </div>
+    </section>
+
+    <!-- Scheme Services -->
+    <section class="dashboard-section">
+        <h2>Scheme Applications</h2>
+
+        <div class="service-grid">
+
+            <div class="service-card">
+                <h3>Apply for a Scheme</h3>
+                <p>Browse government schemes and submit a new application.</p>
+                <a href="{% url 'accounts:schemes' %}">Browse Schemes</a>
+            </div>
+
+            <div class="service-card">
+                <h3>My Applications</h3>
+                <p>View all submitted applications and check their progress.</p>
+                <a href="{% url 'accounts:citizen_applications' %}">My Applications</a>
+            </div>
+
+            <div class="service-card">
+                <h3>Application Status</h3>
+                <p>Check whether your applications are submitted, under review, approved or rejected.</p>
+                <a href="{% url 'accounts:citizen_applications' %}">Track Status</a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Document Services -->
+    <section class="dashboard-section">
+        <h2>Required Documents</h2>
+
+        <div class="application-summary">
+            <div class="summary-card">
+                <span>Total Uploaded Documents</span>
+                <strong>{{ total_documents|default:0 }}</strong>
+            </div>
+
+            <div class="summary-card">
+                <span>Pending Verification</span>
+                <strong>{{ pending_documents|default:0 }}</strong>
+            </div>
+
+            <div class="summary-card">
+                <span>Verified Documents</span>
+                <strong>{{ verified_documents|default:0 }}</strong>
+            </div>
+
+            <div class="summary-card">
+                <span>Rejected Documents</span>
+                <strong>{{ rejected_documents|default:0 }}</strong>
+            </div>
+        </div>
+
+        {% if required_documents_by_scheme %}
+        <div class="required-documents-list">
+            <h3>Documents Required for Your Applications</h3>
+
+            {% for item in required_documents_by_scheme %}
+            <div class="service-card">
+                <h4>{{ item.scheme.name }}</h4>
+
+                <p>
+                    Application Number:
+                    {{ item.application.application_number }}
+                </p>
+
+                {% if item.documents %}
+                <ul>
+                    {% for document in item.documents %}
+                    <li>{{ document.document_name }}</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p>No required documents are configured for this scheme.</p>
+                {% endif %}
+
+                <a href="{% url 'accounts:citizen_applications' %}">
+                    View Application
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p>No scheme applications found. Browse schemes to get started.</p>
+        {% endif %}
+
+        <div class="service-grid">
+
+            <div class="service-card">
+                <h3>Upload Required Documents</h3>
+                <p>Upload PDF or image files requested for your scheme applications.</p>
+                <a href="{% url 'accounts:citizen_applications' %}">Upload Documents</a>
+            </div>
+
+            <div class="service-card">
+                <h3>Document Verification Status</h3>
+                <p>Check whether your uploaded documents are pending, verified or rejected.</p>
+                <a href="{% url 'accounts:citizen_applications' %}">Document Status</a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Queries and Communication -->
+    <section class="dashboard-section">
+        <h2>Queries and Communication</h2>
+
+        <div class="service-grid">
+
+            <div class="service-card">
+                <h3>Post a Query</h3>
+                <p>Send questions about government schemes and applications to Admin or a Department.</p>
+                <a href="{% url 'accounts:citizen_queries' %}">Post Query</a>
+            </div>
+
+            <div class="service-card">
+                <h3>View Queries and Replies</h3>
+                <p>View your submitted queries and responses from Admin or Departments.</p>
+                <a href="{% url 'accounts:citizen_queries' %}">View Queries</a>
+            </div>
+
+            <div class="service-card">
+                <h3>Reply to a Query</h3>
+                <p>Continue an existing conversation with Admin or a Department.</p>
+                <a href="{% url 'accounts:citizen_queries' %}">Reply</a>
+            </div>
+
+            <div class="service-card">
+                <h3>Conversation History</h3>
+                <p>Review previous messages and replies in your conversations.</p>
+                <a href="{% url 'accounts:citizen_queries' %}">View History</a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Account Services -->
+    <section class="dashboard-section">
+        <h2>Account</h2>
+
+        <div class="service-grid">
+
+            <div class="service-card">
+                <h3>My Profile</h3>
+                <p>View and update your personal information and eligibility details.</p>
+                <a href="{% url 'accounts:profile' %}">My Profile</a>
+            </div>
+
+            <div class="service-card">
+                <h3>Logout</h3>
+                <p>Securely sign out of your citizen account.</p>
+
+                <form method="post" action="{% url 'accounts:logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="logout-link">
+                        Logout
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </section>
+
+    <p class="dashboard-note">
+        Eligibility and application information displayed on this dashboard is for
+        tracking purposes. Final scheme approval is determined by the responsible
+        government department.
+    </p>
+
+</div>
+{% endblock %}
